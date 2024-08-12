@@ -7,7 +7,7 @@ import (
 
 func main() {
 	ctrl := &Controller{
-		httpClient:  pokeapi.NewClient(10 * time.Second),
+		httpClient:  pokeapi.NewClient(10*time.Second, 5*time.Second),
 		previousURL: nil,
 		nextURL:     nil,
 	}
