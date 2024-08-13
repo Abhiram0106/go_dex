@@ -5,13 +5,13 @@ import (
 	"fmt"
 )
 
-func commandExplore(ctrl *Controller, input *[]string) error {
+func commandExplore(ctrl *Controller, input ...string) error {
 
-	if len((*input)) < 2 {
+	if len(input) != 1 {
 		return errors.New("Please specify a location. Type \"help\" for more info")
 	}
 
-	location := (*input)[1]
+	location := input[0]
 
 	res, err := ctrl.httpClient.GetPokemonAtLocation(location)
 
@@ -19,6 +19,8 @@ func commandExplore(ctrl *Controller, input *[]string) error {
 		return err
 	}
 
+	fmt.Printf("Exploring %s...\n", location)
+	fmt.Println("Pokemon found:")
 	for _, encounter := range res.PokemonEncounters {
 		fmt.Println(encounter.Pokemon.Name)
 	}

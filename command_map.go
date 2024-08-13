@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func commandMapf(ctrl *Controller, input *[]string) error {
+func commandMapf(ctrl *Controller, input ...string) error {
 	if ctrl.nextURL == nil && ctrl.previousURL != nil {
 		return errors.New("You are on the first page")
 	}
@@ -23,7 +23,7 @@ func commandMapf(ctrl *Controller, input *[]string) error {
 	return nil
 }
 
-func commandMapb(ctrl *Controller, input *[]string) error {
+func commandMapb(ctrl *Controller, input ...string) error {
 	if ctrl.previousURL == nil {
 		return errors.New("You are on the first page")
 	}

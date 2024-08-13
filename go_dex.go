@@ -12,7 +12,7 @@ import (
 type Command struct {
 	name        string
 	description string
-	command     func(ctrl *Controller, parameter *[]string) error
+	command     func(ctrl *Controller, parameters ...string) error
 }
 
 type Controller struct {
@@ -40,7 +40,12 @@ func StartRepl(ctrl *Controller) {
 			fmt.Println("Unkown Command")
 			continue
 		}
-		err := command.command(ctrl, input)
+		args := []string{}
+		if len(*input) > 1 {
+			args = (*input)[1:]
+		}
+
+		err := command.command(ctrl, args...)
 		if err != nil {
 			fmt.Println(err)
 		}

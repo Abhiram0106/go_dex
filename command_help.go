@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func commandHelp(ctrl *Controller, input *[]string) error {
+func commandHelp(ctrl *Controller, input ...string) error {
 	fmt.Println("Welcome to go_dex!")
 	fmt.Print("Usage:")
 	fmt.Println()
