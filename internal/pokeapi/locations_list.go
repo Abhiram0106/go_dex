@@ -15,7 +15,7 @@ func (c *Client) GetLocations(pagedUrl *string) (PokeLocationsResponse, error) {
 		url = *pagedUrl
 	}
 
-	cachedResult, exists := c.cache.Get(url)
+	cachedResult, exists := c.cache.GetIdToLocations(url)
 	if exists {
 		poke_locs := PokeLocationsResponse{}
 		marshal_err := json.Unmarshal(cachedResult, &poke_locs)
@@ -53,7 +53,7 @@ func (c *Client) GetLocations(pagedUrl *string) (PokeLocationsResponse, error) {
 		return PokeLocationsResponse{}, marshal_err
 	}
 
-	c.cache.Add(url, body)
+	c.cache.AddIdToLocations(url, body)
 
 	return poke_locs, nil
 }

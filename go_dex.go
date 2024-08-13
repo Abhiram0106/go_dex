@@ -12,7 +12,7 @@ import (
 type Command struct {
 	name        string
 	description string
-	command     func(*Controller) error
+	command     func(ctrl *Controller, parameter *[]string) error
 }
 
 type Controller struct {
@@ -35,12 +35,12 @@ func StartRepl(ctrl *Controller) {
 		}
 
 		input := cleanInput(&capturedText)
-		command, exists := getCommands()[input]
+		command, exists := getCommands()[(*input)[0]]
 		if !exists {
 			fmt.Println("Unkown Command")
 			continue
 		}
-		err := command.command(ctrl)
+		err := command.command(ctrl, input)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -61,19 +61,24 @@ func getCommands() map[string]Command {
 		},
 		"map": {
 			name:        "map",
-			description: "Fetch the next 20 locations",
+			description: "List the next 20 locations",
 			command:     commandMapf,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "Fetch the previous 20 locations",
+			description: "List the previous 20 locations",
 			command:     commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "List the Pokemon of a given area. Ex: explore pastoria-city-area",
+			command:     commandExplore,
 		},
 	}
 }
 
-func cleanInput(input *string) string {
+func cleanInput(input *string) *[]string {
 	output := strings.ToLower(*input)
 	words := strings.Fields(output)
-	return words[0]
+	return &words
 }
