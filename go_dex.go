@@ -90,6 +90,11 @@ func getCommands() map[string]Command {
 			description: "Inspect the stats of a pokemon you have caught",
 			command:     commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List all the pokemon that you have caught",
+			command:     commandPokedex,
+		},
 	}
 }
 

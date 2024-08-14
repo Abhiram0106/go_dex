@@ -8,7 +8,7 @@ func commandHelp(ctrl *Controller, input ...string) error {
 	fmt.Println()
 
 	for _, cmd := range getCommands() {
-		fmt.Print(fmt.Sprintf("%s: %s\n", cmd.name, cmd.description))
+		fmt.Print(fmt.Sprintf("	%s: %s\n", cmd.name, cmd.description))
 	}
 	fmt.Println()
 

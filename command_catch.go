@@ -26,6 +26,7 @@ func commandCatch(ctrl *Controller, parameters ...string) error {
 
 	if res.BaseExperience < luck {
 		fmt.Printf("%s was caught!\n", res.Name)
+		fmt.Println("You may now inspect it with the inspect command.")
 	} else {
 		fmt.Printf("%s escaped!\n", res.Name)
 	}
