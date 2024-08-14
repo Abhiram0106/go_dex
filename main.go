@@ -10,6 +10,7 @@ func main() {
 		httpClient:  pokeapi.NewClient(10*time.Second, 5*time.Second),
 		previousURL: nil,
 		nextURL:     nil,
+		pokedex:     make(map[string]pokeapi.CatchPokemonResponse),
 	}
 	StartRepl(ctrl)
 }

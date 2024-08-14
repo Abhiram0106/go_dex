@@ -11,16 +11,14 @@ type cacheEntry struct {
 	val       []byte
 }
 type Cache struct {
-	mux                      *sync.Mutex
-	cachedIdToLocations      map[string]cacheEntry
-	cachedLocationToPokemons map[string]cacheEntry
+	mux   *sync.Mutex
+	cache map[string]cacheEntry
 }
 
 func NewCache(interval time.Duration) Cache {
 	cache := Cache{
-		mux:                      &sync.Mutex{},
-		cachedIdToLocations:      make(map[string]cacheEntry),
-		cachedLocationToPokemons: make(map[string]cacheEntry),
+		mux:   &sync.Mutex{},
+		cache: make(map[string]cacheEntry),
 	}
 
 	go cache.reapLoop(interval)
@@ -28,75 +26,41 @@ func NewCache(interval time.Duration) Cache {
 	return cache
 }
 
-func (c *Cache) AddIdToLocations(id string, locations []byte) {
+func (c *Cache) Add(id string, val []byte) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	c.cachedIdToLocations[id] = cacheEntry{
+	c.cache[id] = cacheEntry{
 		createdAt: time.Now(),
-		val:       locations,
+		val:       val,
 	}
 }
 
-func (c *Cache) GetIdToLocations(id string) ([]byte, bool) {
+func (c *Cache) Get(id string) ([]byte, bool) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	cached, exists := c.cachedIdToLocations[id]
+	cached, exists := c.cache[id]
 	if !exists {
-		return []byte{}, false
+		return []byte{}, exists
 	}
-	return cached.val, true
-}
-
-func (c *Cache) AddLocationToPokemons(location string, pokemons []byte) {
-	c.mux.Lock()
-	defer c.mux.Unlock()
-
-	c.cachedLocationToPokemons[location] = cacheEntry{
-		createdAt: time.Now(),
-		val:       pokemons,
-	}
-}
-
-func (c *Cache) GetLocationToPokemons(location string) ([]byte, bool) {
-	c.mux.Lock()
-	defer c.mux.Unlock()
-
-	cached, exists := c.cachedLocationToPokemons[location]
-	if !exists {
-		return []byte{}, false
-	}
-	return cached.val, true
+	return cached.val, exists
 }
 
 func (c *Cache) reapLoop(interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	for range ticker.C {
-		go c.reapIdToLocations(interval)
-		go c.reapLocationToPokemons(interval)
+		go c.reapCache(interval)
 	}
 }
 
-func (c *Cache) reapIdToLocations(last time.Duration) {
+func (c *Cache) reapCache(last time.Duration) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
-	for k, item := range c.cachedIdToLocations {
+	for k, item := range c.cache {
 		if time.Since(item.createdAt) > last {
-			delete(c.cachedIdToLocations, k)
-			fmt.Printf("Cache ID->Loc REAPED %v\n", k)
-			fmt.Printf("go_dex > ")
-		}
-	}
-}
-
-func (c *Cache) reapLocationToPokemons(last time.Duration) {
-	c.mux.Lock()
-	defer c.mux.Unlock()
-	for k, item := range c.cachedLocationToPokemons {
-		if time.Since(item.createdAt) > last {
-			delete(c.cachedLocationToPokemons, k)
-			fmt.Printf("Cache Loc->Pokemon REAPED %v\n", k)
+			delete(c.cache, k)
+			fmt.Printf("Cache ID REAPED %v\n", k)
 			fmt.Printf("go_dex > ")
 		}
 	}

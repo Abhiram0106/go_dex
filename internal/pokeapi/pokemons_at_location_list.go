@@ -11,7 +11,7 @@ func (c *Client) GetPokemonAtLocation(location_name string) (PokemonAtLocationRe
 
 	url := baseUrl + locations + "/" + location_name
 
-	cache, exists := c.cache.GetLocationToPokemons(location_name)
+	cache, exists := c.cache.Get(location_name)
 	if exists {
 		pokemon_at_loc := PokemonAtLocationResponse{}
 		marshalError := json.Unmarshal(cache, &pokemon_at_loc)
@@ -49,7 +49,7 @@ func (c *Client) GetPokemonAtLocation(location_name string) (PokemonAtLocationRe
 		return PokemonAtLocationResponse{}, marshalError
 	}
 
-	c.cache.AddLocationToPokemons(location_name, body)
+	c.cache.Add(location_name, body)
 
 	return pokemon_at_loc, nil
 }

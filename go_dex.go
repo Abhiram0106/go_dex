@@ -19,6 +19,7 @@ type Controller struct {
 	httpClient  pokeapi.Client
 	previousURL *string
 	nextURL     *string
+	pokedex     map[string]pokeapi.CatchPokemonResponse
 }
 
 func StartRepl(ctrl *Controller) {
@@ -78,6 +79,16 @@ func getCommands() map[string]Command {
 			name:        "explore",
 			description: "List the Pokemon of a given area. Ex: explore pastoria-city-area",
 			command:     commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon by its name. Ex: catch pikachu",
+			command:     commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect the stats of a pokemon you have caught",
+			command:     commandInspect,
 		},
 	}
 }
